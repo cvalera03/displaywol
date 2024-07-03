@@ -13,13 +13,16 @@ def wol(luna_mac_address: bytes) -> None:
 ventana = tk.Tk()
 ventana.title("Wake on Lan")
 
+#Variables
 musta = tk.IntVar()
 brigi = tk.IntVar()
 textomacvar = tk.StringVar()
 textonamevar = tk.StringVar()
 
+#Crea el archivo csv si no existe
 f = open("macs.csv", "a")
 
+#Enciende con WOL
 def encender():
     textomac = textomacvar.get()
 
@@ -34,6 +37,7 @@ def encender():
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
 
+#Agrega a la lista la informacion
 def agregar_mac():
     textomac = textomacvar.get()
     textoname = textonamevar.get()
@@ -64,8 +68,11 @@ def agregar_mac():
         escritor_csv.writeheader()
         for fila in datos:
             escritor_csv.writerow(fila)
+    
+    actualizar_csv()
 
-def leer_csv():
+#Actualiza la informacion para mostrarla en pantalla
+def actualizar_csv():
     separador = ","
     listamac.delete(0, tk.END)
     with open("macs.csv", "r") as archivo_csv:
@@ -126,18 +133,15 @@ boton.grid(row=0, column=0)
 agregar = tk.Button(botones, text="Agregar", command=agregar_mac)
 agregar.grid(row=0, column=1)
 
-actualizar = tk.Button(botones, text="Actualizar", command=leer_csv)
-actualizar.grid(row=0, column=2)
-
 scrollbar = tk.Scrollbar(ventana, orient=tk.VERTICAL)
-
 listamac = tk.Listbox(ventana, width=50, height=10, yscrollcommand=scrollbar.set)
 scrollbar.config(command=listamac.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 listamac.pack()
 
 #Funciones nada mas iniciar
-leer_csv()
+actualizar_csv()
 
+#Crea la ventana
 ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{posicion_x}+{posicion_y}")
 ventana.mainloop()
