@@ -24,6 +24,8 @@ def encender():
     elif brigi.get() == 1:
         print("brigit")
     elif len(texto) > 0:
+        textomayus = texto.upper()
+        print(textomayus)
         mac = texto.replace(":", "")
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
@@ -35,8 +37,8 @@ ancho_pantalla = ventana.winfo_screenwidth()
 alto_pantalla = ventana.winfo_screenheight()
 
 # Calcular las coordenadas para centrar la ventana
-ancho_ventana = 300
-alto_ventana = 200
+ancho_ventana = 500
+alto_ventana = 300
 posicion_x = (ancho_pantalla - ancho_ventana) // 2
 posicion_y = (alto_pantalla - alto_ventana) // 2
 
