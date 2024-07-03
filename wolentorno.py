@@ -67,13 +67,16 @@ def agregar_mac():
 
 def leer_csv():
     separador = ","
+    listamac.delete(0, tk.END)
     with open("macs.csv", "r") as archivo_csv:
         for linea in archivo_csv:
             linea = linea.rstrip("\n")
             columnas = linea.split(separador)
             macleer = columnas[0]
             nameleer = columnas[1]
-            print({"mac" : macleer, "name" : nameleer})
+            elementos = [f"MAC: {macleer}, Nombre: {nameleer}"]
+            for elemento in elementos:
+                listamac.insert(tk.END, elemento)
 
 
 # Obtener dimensiones de la pantalla
@@ -123,11 +126,18 @@ boton.grid(row=0, column=0)
 agregar = tk.Button(botones, text="Agregar", command=agregar_mac)
 agregar.grid(row=0, column=1)
 
-leer = tk.Button(botones, text="Leer", command=leer_csv)
-leer.grid(row=0, column=2)
+actualizar = tk.Button(botones, text="Actualizar", command=leer_csv)
+actualizar.grid(row=0, column=2)
 
-listamac = tk.Listbox(ventana, width=50, height=10)
+scrollbar = tk.Scrollbar(ventana, orient=tk.VERTICAL)
+
+listamac = tk.Listbox(ventana, width=50, height=10, yscrollcommand=scrollbar.set)
+scrollbar.config(command=listamac.yview)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 listamac.pack()
+
+#Funciones nada mas iniciar
+leer_csv()
 
 ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{posicion_x}+{posicion_y}")
 ventana.mainloop()
