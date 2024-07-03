@@ -81,13 +81,13 @@ ancho_pantalla = ventana.winfo_screenwidth()
 alto_pantalla = ventana.winfo_screenheight()
 
 # Calcular las coordenadas para centrar la ventana
-ancho_ventana = 500
+ancho_ventana = 350
 alto_ventana = 300
 posicion_x = (ancho_pantalla - ancho_ventana) // 2
 posicion_y = (alto_pantalla - alto_ventana) // 2
 
 # Widgets
-etiqueta = tk.Label(ventana, text= "Escoge el ordenador a encender")
+etiqueta = tk.Label(ventana, text= "Escoge el ordenador a encender: ")
 etiqueta.pack()
 
 framefijos = tk.Frame(ventana)
@@ -114,14 +114,20 @@ labelname.grid(row=0, column=2)
 cuadroname = tk.Entry(framemac, textvariable=textonamevar)
 cuadroname.grid(row=0, column=3)
 
-boton = tk.Button(ventana, text="Encender", command=encender)
-boton.pack()
+botones = tk.Frame(ventana)
+botones.pack()
 
-agregar = tk.Button(ventana, text="Agregar", command=agregar_mac)
-agregar.pack()
+boton = tk.Button(botones, text="Encender", command=encender)
+boton.grid(row=0, column=0)
 
-leer = tk.Button(ventana, text="Leer", command=leer_csv)
-leer.pack()
+agregar = tk.Button(botones, text="Agregar", command=agregar_mac)
+agregar.grid(row=0, column=1)
+
+leer = tk.Button(botones, text="Leer", command=leer_csv)
+leer.grid(row=0, column=2)
+
+listamac = tk.Listbox(ventana, width=50, height=10)
+listamac.pack()
 
 ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{posicion_x}+{posicion_y}")
 ventana.mainloop()
