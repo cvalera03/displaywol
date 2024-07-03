@@ -14,19 +14,21 @@ ventana.title("Wake on Lan")
 
 musta = tk.IntVar()
 brigi = tk.IntVar()
-textovar = tk.StringVar()
+textomacvar = tk.StringVar()
+textonamevar = tk.StringVar()
+
+f = open("macs.csv", "a")
 
 def encender():
-    texto = textovar.get()
+    textomac = textomacvar.get()
 
     if musta.get() == 1:
         wol(b"\xE0\x3F\x49\xA6\x8D\xA0")
     elif brigi.get() == 1:
         print("brigit")
     elif len(texto) > 0:
-        textomayus = texto.upper()
-        print(textomayus)
-        mac = texto.replace(":", "")
+        textomayus = textomac.upper()
+        mac = textomac.replace(":", "")
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
@@ -46,18 +48,32 @@ posicion_y = (alto_pantalla - alto_ventana) // 2
 etiqueta = tk.Label(ventana, text= "Escoge el ordenador a encender")
 etiqueta.pack()
 
-casilla = tk.Checkbutton(ventana, text="Mustapha", variable=musta, onvalue=1, offvalue=0)
-casilla.pack()
+framefijos = tk.Frame(ventana)
+framefijos.pack()
 
-casilla2 = tk.Checkbutton(ventana, text="Brigitte", variable=brigi, onvalue=1, offvalue=0)
-casilla2.pack()
+casilla = tk.Checkbutton(framefijos, text="Mustapha", variable=musta, onvalue=1, offvalue=0)
+casilla.grid(row=1, column=0)
+
+casilla2 = tk.Checkbutton(framefijos, text="Brigitte", variable=brigi, onvalue=1, offvalue=0)
+casilla2.grid(row=1, column=1)
+
+framemac = tk.Frame(ventana)
+framemac.pack()
+
+labelmac = tk.Label(framemac, text="MAC: ")
+labelmac.grid(row=0, column=0)
+
+cuadromac = tk.Entry(framemac, textvariable=textomacvar)
+cuadromac.grid(row=0, column=1)
+
+labelname = tk.Label(framemac, text="NOMBRE: ")
+labelname.grid(row=0, column=2)
+
+cuadroname = tk.Entry(framemac, textvariable=textonamevar)
+cuadroname.grid(row=0, column=3)
 
 boton = tk.Button(ventana, text="Encender", command=encender)
 boton.pack()
-
-cuadrotext = tk.Entry(ventana, textvariable=textovar)
-cuadrotext.pack()
-
 
 ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{posicion_x}+{posicion_y}")
 ventana.mainloop()
