@@ -1,6 +1,7 @@
 import tkinter as tk
 import socket
 import codecs
+import csv
 
 def wol(luna_mac_address: bytes) -> None:
     """Send a Wake-on-LAN magic packet to the specified MAC address."""
@@ -32,6 +33,40 @@ def encender():
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
+
+def agregar_mac():
+    textomac = textomacvar.get()
+    textoname = textonamevar.get()
+    separador = ","
+
+    with open("macs.csv", "r") as archivo_csv:
+        next(archivo_csv)
+        datos = []
+        for linea in archivo_csv:
+            linea = linea.rstrip("\n")
+            columnas = linea.split(separador)
+            macdato = columnas[0]
+            print(macdato)
+            namedato = columnas[1]
+            print(namedato)
+            datos.append({
+                "mac" : macdato,
+                "name" : namedato
+            })
+
+    print(datos)
+    nuevos_datos = {
+        "mac" : textomac,
+        "name" : textoname
+    }
+    print(nuevos_datos)
+    datos.append(nuevos_datos)
+    print(datos)
+    with open("macs.csv", "w", newline="") as archivo_csv:
+        escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
+        escritor_csv.writeheader()
+        for fila in datos:
+            escritor_csv.writerow(fila)
 
 
 # Obtener dimensiones de la pantalla
@@ -74,6 +109,9 @@ cuadroname.grid(row=0, column=3)
 
 boton = tk.Button(ventana, text="Encender", command=encender)
 boton.pack()
+
+agregar = tk.Button(ventana, text="Agregar", command=agregar_mac)
+agregar.pack()
 
 ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{posicion_x}+{posicion_y}")
 ventana.mainloop()
