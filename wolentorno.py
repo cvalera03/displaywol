@@ -46,27 +46,34 @@ def agregar_mac():
             linea = linea.rstrip("\n")
             columnas = linea.split(separador)
             macdato = columnas[0]
-            print(macdato)
             namedato = columnas[1]
-            print(namedato)
             datos.append({
                 "mac" : macdato,
                 "name" : namedato
             })
 
-    print(datos)
     nuevos_datos = {
         "mac" : textomac,
         "name" : textoname
     }
-    print(nuevos_datos)
+
     datos.append(nuevos_datos)
-    print(datos)
+
     with open("macs.csv", "w", newline="") as archivo_csv:
         escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
         escritor_csv.writeheader()
         for fila in datos:
             escritor_csv.writerow(fila)
+
+def leer_csv():
+    separador = ","
+    with open("macs.csv", "r") as archivo_csv:
+        for linea in archivo_csv:
+            linea = linea.rstrip("\n")
+            columnas = linea.split(separador)
+            macleer = columnas[0]
+            nameleer = columnas[1]
+            print({"mac" : macleer, "name" : nameleer})
 
 
 # Obtener dimensiones de la pantalla
@@ -112,6 +119,9 @@ boton.pack()
 
 agregar = tk.Button(ventana, text="Agregar", command=agregar_mac)
 agregar.pack()
+
+leer = tk.Button(ventana, text="Leer", command=leer_csv)
+leer.pack()
 
 ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{posicion_x}+{posicion_y}")
 ventana.mainloop()
