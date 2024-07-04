@@ -76,6 +76,7 @@ def actualizar_csv():
     separador = ","
     listamac.delete(0, tk.END)
     with open("macs.csv", "r") as archivo_csv:
+        next(archivo_csv)
         for linea in archivo_csv:
             linea = linea.rstrip("\n")
             columnas = linea.split(separador)
@@ -85,13 +86,18 @@ def actualizar_csv():
             for elemento in elementos:
                 listamac.insert(tk.END, elemento)
 
+def borrar():
+    seleccion = listamac.curselection()
+    if seleccion:
+        listamac.delete(seleccion)
+
 
 # Obtener dimensiones de la pantalla
 ancho_pantalla = ventana.winfo_screenwidth()
 alto_pantalla = ventana.winfo_screenheight()
 
 # Calcular las coordenadas para centrar la ventana
-ancho_ventana = 350
+ancho_ventana = 375
 alto_ventana = 300
 posicion_x = (ancho_pantalla - ancho_ventana) // 2
 posicion_y = (alto_pantalla - alto_ventana) // 2
@@ -132,6 +138,9 @@ boton.grid(row=0, column=0)
 
 agregar = tk.Button(botones, text="Agregar", command=agregar_mac)
 agregar.grid(row=0, column=1)
+
+eliminar = tk.Button(botones, text="Eliminar", command=borrar)
+eliminar.grid(row=0, column=2)
 
 scrollbar = tk.Scrollbar(ventana, orient=tk.VERTICAL)
 listamac = tk.Listbox(ventana, width=50, height=10, yscrollcommand=scrollbar.set)
