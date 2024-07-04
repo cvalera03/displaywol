@@ -90,6 +90,38 @@ def borrar():
     seleccion = listamac.curselection()
     if seleccion:
         listamac.delete(seleccion)
+    
+    separador = ","
+
+    with open("macs.csv", "r") as archivo_csv:
+        next(archivo_csv)
+        datos = []
+        for linea in archivo_csv:
+            linea = linea.rstrip("\n")
+            columnas = linea.split(separador)
+            macdato = columnas[0]
+            namedato = columnas[1]
+            datos.append({
+                "mac" : macdato,
+                "name" : namedato
+            })
+    
+    selestr1 = str(seleccion)
+    selestr2 = selestr1.replace("(", "")
+    selestr3 = selestr2.replace(")", "")
+    selestr = selestr3.replace(",", "")
+    selec = int(selestr)
+    
+    datos.pop(selec)
+
+    with open("macs.csv", "w", newline="") as archivo_csv:
+        escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
+        escritor_csv.writeheader()
+        for fila in datos:
+            escritor_csv.writerow(fila)
+    
+    datos = []
+
 
 
 # Obtener dimensiones de la pantalla
