@@ -2,6 +2,7 @@ import tkinter as tk
 import socket
 import codecs
 import csv
+import os.path as path
 from tkinter import messagebox as Messagebox
 
 def wol(luna_mac_address: bytes) -> None:
@@ -19,9 +20,15 @@ musta = tk.IntVar()
 brigi = tk.IntVar()
 textomacvar = tk.StringVar()
 textonamevar = tk.StringVar()
+ifnotexist = [{"mac" : "mac", "name" : "name"}]
 
 #Crea el archivo csv si no existe
-f = open("macs.csv", "a")
+if not path.exists("macs.csv"):
+    f = open("macs.csv", "a")
+    with open("macs.csv", "w", newline="") as archivo_csv:
+        escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
+        escritor_csv.writeheader()
+        
 
 #Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
