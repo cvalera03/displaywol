@@ -22,20 +22,40 @@ textonamevar = tk.StringVar()
 #Crea el archivo csv si no existe
 f = open("macs.csv", "a")
 
-#Enciende con WOL
+#Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
     textomac = textomacvar.get()
+    seleccion = listamac.curselection()
 
-    if musta.get() == 1:
-        wol(b"\xE0\x3F\x49\xA6\x8D\xA0")
-    elif brigi.get() == 1:
-        print("brigit")
-    elif len(texto) > 0:
+    if len(textomac) > 0:
         textomayus = textomac.upper()
         mac = textomac.replace(":", "")
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
+    elif seleccion:
+        separador = ","
+        with open("macs.csv", "r") as archivo_csv:
+            next(archivo_csv)
+            datos = []
+            for linea in archivo_csv:
+                linea = linea.rstrip("\n")
+                columnas = linea.split(separador)
+                macdato = columnas[0]
+                namedato = columnas[1]
+                datos.append({
+                    "mac" : macdato,
+                    "name" : namedato
+                })
+        
+        selestr1 = str(seleccion)
+        selestr2 = selestr1.replace("(", "")
+        selestr3 = selestr2.replace(")", "")
+        selestr = selestr3.replace(",", "")
+        selec = int(selestr)
+        
+        print(datos[selec])
+    
 
 #Agrega a la lista la informacion
 def agregar_mac():
@@ -69,6 +89,8 @@ def agregar_mac():
         for fila in datos:
             escritor_csv.writerow(fila)
     
+    cuadromac.delete(0, tk.END)
+    cuadroname.delete(0, tk.END)
     actualizar_csv()
 
 #Actualiza la informacion para mostrarla en pantalla
@@ -140,12 +162,6 @@ etiqueta.pack()
 
 framefijos = tk.Frame(ventana)
 framefijos.pack()
-
-casilla = tk.Checkbutton(framefijos, text="Mustapha", variable=musta, onvalue=1, offvalue=0)
-casilla.grid(row=1, column=0)
-
-casilla2 = tk.Checkbutton(framefijos, text="Brigitte", variable=brigi, onvalue=1, offvalue=0)
-casilla2.grid(row=1, column=1)
 
 framemac = tk.Frame(ventana)
 framemac.pack()
