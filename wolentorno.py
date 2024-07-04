@@ -54,7 +54,14 @@ def encender():
         selestr = selestr3.replace(",", "")
         selec = int(selestr)
         
-        print(datos[selec])
+        dicget = datos[selec]
+        dicmacint = dicget.get("mac")
+        dicmac = str(dicmacint)
+
+        macsele = dicmac.replace(":", "")
+        macsinsele = memoryview(macsele.encode("utf-8")).tobytes()
+        macbytesele = codecs.decode(macsinsele, "hex") 
+        wol(macbytesele)
     
 
 #Agrega a la lista la informacion
