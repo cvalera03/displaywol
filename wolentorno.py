@@ -2,6 +2,7 @@ import tkinter as tk
 import socket
 import codecs
 import csv
+from tkinter import messagebox as Messagebox
 
 def wol(luna_mac_address: bytes) -> None:
     """Send a Wake-on-LAN magic packet to the specified MAC address."""
@@ -120,6 +121,7 @@ def actualizar_csv():
 def borrar():
     seleccion = listamac.curselection()
     if not seleccion:
+        Messagebox.showinfo("Error!", "Debes seleccionarlo.")
         return
 
     listamac.delete(seleccion)
