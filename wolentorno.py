@@ -30,6 +30,7 @@ def encender():
     if len(textomac) > 0:
         textomayus = textomac.upper()
         mac = textomac.replace(":", "")
+        mac = textomac.replace("-", "")
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
@@ -59,6 +60,7 @@ def encender():
         dicmac = str(dicmacint)
 
         macsele = dicmac.replace(":", "")
+        macsele = dicmac.replace("-", "")
         macsinsele = memoryview(macsele.encode("utf-8")).tobytes()
         macbytesele = codecs.decode(macsinsele, "hex") 
         wol(macbytesele)
@@ -117,9 +119,10 @@ def actualizar_csv():
 
 def borrar():
     seleccion = listamac.curselection()
-    if seleccion:
-        listamac.delete(seleccion)
-    
+    if not seleccion:
+        return
+
+    listamac.delete(seleccion)
     separador = ","
 
     with open("macs.csv", "r") as archivo_csv:
