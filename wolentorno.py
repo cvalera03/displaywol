@@ -21,20 +21,20 @@ brigi = tk.IntVar()
 textomacvar = tk.StringVar()
 textonamevar = tk.StringVar()
 ifnotexist = [{"mac" : "mac", "name" : "name"}]
+nomcsv = "macs.csv"
 
 #Crea el archivo csv si no existe
-if not path.exists("macs.csv"):
-    f = open("macs.csv", "a")
-    with open("macs.csv", "w", newline="") as archivo_csv:
+if not path.exists(nomcsv):
+    f = open(nomcsv, "a")
+    with open(nomcsv, "w", newline="") as archivo_csv:
         escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
         escritor_csv.writeheader()
         
 def leer_datos():
-    global separador
+    global datos
     separador = ","
-    with open("macs.csv", "r") as archivo_csv:
+    with open(nomcsv, "r") as archivo_csv:
         next(archivo_csv)
-        global datos
         datos = []
         for linea in archivo_csv:
             linea = linea.rstrip("\n")
@@ -45,6 +45,21 @@ def leer_datos():
                 "mac" : macdato,
                 "name" : namedato
             })
+
+def limpselec(seleccion):
+    global selec
+    selestr1 = str(seleccion)
+    selestr2 = selestr1.replace("(", "")
+    selestr3 = selestr2.replace(")", "")
+    selestr = selestr3.replace(",", "")
+    selec = int(selestr)
+
+def leercsv():
+    with open(nomcsv, "w", newline="") as archivo_csv:
+        escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
+        escritor_csv.writeheader()
+        for fila in datos:
+            escritor_csv.writerow(fila)
 
 #Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
@@ -58,14 +73,9 @@ def encender():
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
-    elif seleccion:    
+    elif seleccion:   
         leer_datos()
-        
-        selestr1 = str(seleccion)
-        selestr2 = selestr1.replace("(", "")
-        selestr3 = selestr2.replace(")", "")
-        selestr = selestr3.replace(",", "")
-        selec = int(selestr)
+        limpselec(seleccion=seleccion)
         
         dicget = datos[selec]
         dicmacint = dicget.get("mac")
@@ -92,11 +102,7 @@ def agregar_mac():
 
     datos.append(nuevos_datos)
 
-    with open("macs.csv", "w", newline="") as archivo_csv:
-        escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
-        escritor_csv.writeheader()
-        for fila in datos:
-            escritor_csv.writerow(fila)
+    leercsv()
     
     cuadromac.delete(0, tk.END)
     cuadroname.delete(0, tk.END)
@@ -106,7 +112,7 @@ def agregar_mac():
 def actualizar_csv():
     separador = ","
     listamac.delete(0, tk.END)
-    with open("macs.csv", "r") as archivo_csv:
+    with open(nomcsv, "r") as archivo_csv:
         next(archivo_csv)
         for linea in archivo_csv:
             linea = linea.rstrip("\n")
@@ -124,36 +130,11 @@ def borrar():
         return
 
     listamac.delete(seleccion)
-    separador = ","
-
-    with open("macs.csv", "r") as archivo_csv:
-        next(archivo_csv)
-        datos = []
-        for linea in archivo_csv:
-            linea = linea.rstrip("\n")
-            columnas = linea.split(separador)
-            macdato = columnas[0]
-            namedato = columnas[1]
-            datos.append({
-                "mac" : macdato,
-                "name" : namedato
-            })
-    
-    selestr1 = str(seleccion)
-    selestr2 = selestr1.replace("(", "")
-    selestr3 = selestr2.replace(")", "")
-    selestr = selestr3.replace(",", "")
-    selec = int(selestr)
-    
+    leer_datos()
+    limpselec(seleccion=seleccion)
     datos.pop(selec)
+    leercsv()
 
-    with open("macs.csv", "w", newline="") as archivo_csv:
-        escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
-        escritor_csv.writeheader()
-        for fila in datos:
-            escritor_csv.writerow(fila)
-    
-    datos = []
 
 # Obtener dimensiones de la pantalla
 ancho_pantalla = ventana.winfo_screenwidth()
