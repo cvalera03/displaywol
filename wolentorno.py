@@ -38,7 +38,7 @@ def encender():
     if len(textomac) > 0:
         textomayus = textomac.upper()
         mac = textomac.replace(":", "")
-        mac = textomac.replace("-", "")
+        mac = mac.replace("-", "")
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
@@ -68,7 +68,7 @@ def encender():
         dicmac = str(dicmacint)
 
         macsele = dicmac.replace(":", "")
-        macsele = dicmac.replace("-", "")
+        macsele = macsele.replace("-", "")
         macsinsele = memoryview(macsele.encode("utf-8")).tobytes()
         macbytesele = codecs.decode(macsinsele, "hex") 
         wol(macbytesele)
