@@ -29,6 +29,22 @@ if not path.exists("macs.csv"):
         escritor_csv = csv.DictWriter(archivo_csv, fieldnames=["mac", "name"])
         escritor_csv.writeheader()
         
+def leer_datos():
+    global separador
+    separador = ","
+    with open("macs.csv", "r") as archivo_csv:
+        next(archivo_csv)
+        global datos
+        datos = []
+        for linea in archivo_csv:
+            linea = linea.rstrip("\n")
+            columnas = linea.split(separador)
+            macdato = columnas[0]
+            namedato = columnas[1]
+            datos.append({
+                "mac" : macdato,
+                "name" : namedato
+            })
 
 #Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
@@ -42,20 +58,8 @@ def encender():
         macsin = memoryview(mac.encode("utf-8")).tobytes()
         macbyte = codecs.decode(macsin, "hex") 
         wol(macbyte)
-    elif seleccion:
-        separador = ","
-        with open("macs.csv", "r") as archivo_csv:
-            next(archivo_csv)
-            datos = []
-            for linea in archivo_csv:
-                linea = linea.rstrip("\n")
-                columnas = linea.split(separador)
-                macdato = columnas[0]
-                namedato = columnas[1]
-                datos.append({
-                    "mac" : macdato,
-                    "name" : namedato
-                })
+    elif seleccion:    
+        leer_datos()
         
         selestr1 = str(seleccion)
         selestr2 = selestr1.replace("(", "")
@@ -78,20 +82,8 @@ def encender():
 def agregar_mac():
     textomac = textomacvar.get()
     textoname = textonamevar.get()
-    separador = ","
-
-    with open("macs.csv", "r") as archivo_csv:
-        next(archivo_csv)
-        datos = []
-        for linea in archivo_csv:
-            linea = linea.rstrip("\n")
-            columnas = linea.split(separador)
-            macdato = columnas[0]
-            namedato = columnas[1]
-            datos.append({
-                "mac" : macdato,
-                "name" : namedato
-            })
+    
+    leer_datos()
 
     nuevos_datos = {
         "mac" : textomac,
@@ -128,7 +120,7 @@ def actualizar_csv():
 def borrar():
     seleccion = listamac.curselection()
     if not seleccion:
-        Messagebox.showinfo("Error!", "Debes seleccionarlo.")
+        Messagebox.showinfo("Error!", "Deberias selecionar una MAC.")
         return
 
     listamac.delete(seleccion)
@@ -163,15 +155,13 @@ def borrar():
     
     datos = []
 
-
-
 # Obtener dimensiones de la pantalla
 ancho_pantalla = ventana.winfo_screenwidth()
 alto_pantalla = ventana.winfo_screenheight()
 
 # Calcular las coordenadas para centrar la ventana
 ancho_ventana = 375
-alto_ventana = 300
+alto_ventana = 250
 posicion_x = (ancho_pantalla - ancho_ventana) // 2
 posicion_y = (alto_pantalla - alto_ventana) // 2
 
@@ -210,7 +200,7 @@ eliminar = tk.Button(botones, text="Eliminar", command=borrar)
 eliminar.grid(row=0, column=2)
 
 scrollbar = tk.Scrollbar(ventana, orient=tk.VERTICAL)
-listamac = tk.Listbox(ventana, width=50, height=10, yscrollcommand=scrollbar.set)
+listamac = tk.Listbox(ventana, width=50, height=10, yscrollcommand=scrollbar.set, selectmode="extended")
 scrollbar.config(command=listamac.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 listamac.pack()
