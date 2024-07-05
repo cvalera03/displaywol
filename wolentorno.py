@@ -5,23 +5,23 @@ import csv
 import os.path as path
 from tkinter import messagebox as Messagebox
 
+ventana = tk.Tk()
+ventana.title("Wake on Lan")
+
+#Variables
+textomacvar = tk.StringVar()
+textonamevar = tk.StringVar()
+ifnotexist = [{"mac" : "mac", "name" : "name"}]
+nomcsv = "macs.csv"
+broadcast = "192.168.1.255"
+
+#WOL
 def wol(luna_mac_address: bytes) -> None:
     """Send a Wake-on-LAN magic packet to the specified MAC address."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     magic = b"\xff" * 6 + luna_mac_address * 16
-    s.sendto(magic, ("192.168.1.255", 7))
-
-ventana = tk.Tk()
-ventana.title("Wake on Lan")
-
-#Variables
-musta = tk.IntVar()
-brigi = tk.IntVar()
-textomacvar = tk.StringVar()
-textonamevar = tk.StringVar()
-ifnotexist = [{"mac" : "mac", "name" : "name"}]
-nomcsv = "macs.csv"
+    s.sendto(magic, (broadcast, 7))
 
 #Crea el archivo csv si no existe
 if not path.exists(nomcsv):
@@ -87,7 +87,6 @@ def encender():
         macbytesele = codecs.decode(macsinsele, "hex") 
         wol(macbytesele)
     
-
 #Agrega a la lista la informacion
 def agregar_mac():
     textomac = textomacvar.get()
@@ -134,7 +133,6 @@ def borrar():
     limpselec(seleccion=seleccion)
     datos.pop(selec)
     leercsv()
-
 
 # Obtener dimensiones de la pantalla
 ancho_pantalla = ventana.winfo_screenwidth()
