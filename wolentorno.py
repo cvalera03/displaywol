@@ -9,7 +9,7 @@ ventana = tk.Tk()
 ventana.title("Wake on Lan")
 
 #Variables
-textomacvar = tk.StringVar()
+macvar = tk.StringVar()
 textonamevar = tk.StringVar()
 ifnotexist = [{"mac" : "mac", "name" : "name"}]
 nomcsv = "macs.csv"
@@ -61,18 +61,20 @@ def leercsv():
         for fila in datos:
             escritor_csv.writerow(fila)
 
+def fixmac(macUser):
+    global mac
+    mac = macUser.replace(":", "").replace("-", "")
+    mac = memoryview(mac.encode("utf-8")).tobytes()
+    mac = codecs.decode(mac, "hex")
+
 #Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
-    textomac = textomacvar.get()
+    macv = macvar.get()
     seleccion = listamac.curselection()
 
-    if len(textomac) > 0:
-        textomayus = textomac.upper()
-        mac = textomac.replace(":", "")
-        mac = mac.replace("-", "")
-        macsin = memoryview(mac.encode("utf-8")).tobytes()
-        macbyte = codecs.decode(macsin, "hex") 
-        wol(macbyte)
+    if len(macv) > 0:
+        fixmac(macUser=macv)
+        wol(mac)
     elif seleccion:   
         leer_datos()
         limpselec(seleccion=seleccion)
@@ -81,15 +83,12 @@ def encender():
         dicmacint = dicget.get("mac")
         dicmac = str(dicmacint)
 
-        macsele = dicmac.replace(":", "")
-        macsele = macsele.replace("-", "")
-        macsinsele = memoryview(macsele.encode("utf-8")).tobytes()
-        macbytesele = codecs.decode(macsinsele, "hex") 
-        wol(macbytesele)
+        fixmac(macUser=dicmac)
+        wol(mac)
     
 #Agrega a la lista la informacion
 def agregar_mac():
-    textomac = textomacvar.get()
+    textomac = macvar.get()
     textoname = textonamevar.get()
     
     leer_datos()
@@ -157,7 +156,7 @@ framemac.pack()
 labelmac = tk.Label(framemac, text="MAC: ")
 labelmac.grid(row=0, column=0)
 
-cuadromac = tk.Entry(framemac, textvariable=textomacvar)
+cuadromac = tk.Entry(framemac, textvariable=macvar)
 cuadromac.grid(row=0, column=1)
 
 labelname = tk.Label(framemac, text="NOMBRE: ")
