@@ -13,7 +13,7 @@ macvar = tk.StringVar()
 textonamevar = tk.StringVar()
 ifnotexist = [{"mac" : "mac", "name" : "name"}]
 nomcsv = "macs.csv"
-broadcast = "192.168.1.255"
+broadcast = "192.168.1.255" #IFCONFIG(LINUX) IPCONFIG(WINDOWS)
 
 #WOL
 def wol(luna_mac_address: bytes) -> None:
