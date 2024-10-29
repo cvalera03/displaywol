@@ -123,7 +123,7 @@ def actualizar_csv():
             columnas = linea.split(separador)
             macleer = columnas[0]
             nameleer = columnas[1]
-            elementos = [f"MAC: {macleer}, Nombre: {nameleer}"]
+            elementos = [f"Nombre: {nameleer}, MAC: {macleer}"]
             for elemento in elementos:
                 listamac.insert(tk.END, elemento)
 
@@ -160,16 +160,16 @@ framemac = tk.Frame(ventana)
 framemac.pack()
 
 labelmac = tk.Label(framemac, text="MAC: ")
-labelmac.grid(row=0, column=0)
+labelmac.grid(row=0, column=2)
 
 cuadromac = tk.Entry(framemac, textvariable=macvar)
-cuadromac.grid(row=0, column=1)
+cuadromac.grid(row=0, column=3)
 
 labelname = tk.Label(framemac, text="NOMBRE: ")
-labelname.grid(row=0, column=2)
+labelname.grid(row=0, column=0)
 
 cuadroname = tk.Entry(framemac, textvariable=textonamevar)
-cuadroname.grid(row=0, column=3)
+cuadroname.grid(row=0, column=1)
 
 botones = tk.Frame(ventana)
 botones.pack()
