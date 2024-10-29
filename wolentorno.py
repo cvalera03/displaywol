@@ -62,10 +62,13 @@ def leercsv():
             escritor_csv.writerow(fila)
 
 def fixmac(macUser):
-    global mac
-    mac = macUser.replace(":", "").replace("-", "")
-    mac = memoryview(mac.encode("utf-8")).tobytes()
-    mac = codecs.decode(mac, "hex")
+    try:
+        global mac
+        mac = macUser.replace(":", "").replace("-", "")
+        mac = memoryview(mac.encode("utf-8")).tobytes()
+        mac = codecs.decode(mac, "hex")
+    except ValueError:
+        Messagebox.showinfo("Error!", "Escribe una mac valida.")
 
 #Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
