@@ -31,6 +31,7 @@ if not path.exists(nomcsv):
         escritor_csv.writeheader()
         
 def leer_datos():
+    global datos
     separador = ","
     with open(nomcsv, "r") as archivo_csv:
         next(archivo_csv)
@@ -44,7 +45,6 @@ def leer_datos():
                 "mac" : macdato,
                 "name" : namedato
             })
-    return datos
 
 def limpselec(seleccion):
     selestr1 = str(seleccion)
@@ -81,7 +81,7 @@ def encender():
         if mac != None:
             wol(mac)
     elif seleccion:   
-        datos = leer_datos()
+        leer_datos()
         selec = limpselec(seleccion=seleccion)
         
         dicget = datos[selec]
@@ -97,7 +97,7 @@ def agregar_mac():
     textomac = macvar.get()
     textoname = textonamevar.get()
     
-    datos = leer_datos()
+    leer_datos()
 
     nuevos_datos = {
         "mac" : textomac,
@@ -131,13 +131,12 @@ def borrar():
     seleccion = listamac.curselection()
     if not seleccion:
         Messagebox.showinfo("Error!", "Deberias selecionar una MAC.")
-        return
-
-    listamac.delete(seleccion)
-    datos = leer_datos()
-    selec = limpselec(seleccion=seleccion)
-    datos.pop(selec)
-    leercsv()
+    else:
+        listamac.delete(seleccion)
+        leer_datos()
+        selec = limpselec(seleccion=seleccion)
+        datos.pop(selec)
+        leercsv()
 
 # Obtener dimensiones de la pantalla
 ancho_pantalla = ventana.winfo_screenwidth()
