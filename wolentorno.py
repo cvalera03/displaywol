@@ -31,7 +31,6 @@ if not path.exists(nomcsv):
         escritor_csv.writeheader()
         
 def leer_datos():
-    global datos
     separador = ","
     with open(nomcsv, "r") as archivo_csv:
         next(archivo_csv)
@@ -45,14 +44,15 @@ def leer_datos():
                 "mac" : macdato,
                 "name" : namedato
             })
+    return datos
 
 def limpselec(seleccion):
-    global selec
     selestr1 = str(seleccion)
     selestr2 = selestr1.replace("(", "")
     selestr3 = selestr2.replace(")", "")
     selestr = selestr3.replace(",", "")
     selec = int(selestr)
+    return selec
 
 def leercsv():
     with open(nomcsv, "w", newline="") as archivo_csv:
@@ -63,12 +63,13 @@ def leercsv():
 
 def fixmac(macUser):
     try:
-        global mac
         mac = macUser.replace(":", "").replace("-", "")
         mac = memoryview(mac.encode("utf-8")).tobytes()
         mac = codecs.decode(mac, "hex")
+        return mac
     except ValueError:
         Messagebox.showinfo("Error!", "Escribe una mac valida.")
+        
 
 #Enciende con WOL E0:3F:49:A6:8D:A0 b"\xE0\x3F\x49\xA6\x8D\xA0" MUSTA
 def encender():
@@ -76,25 +77,27 @@ def encender():
     seleccion = listamac.curselection()
 
     if len(macv) > 0:
-        fixmac(macUser=macv)
-        wol(mac)
+        mac = fixmac(macUser=macv)
+        if mac != None:
+            wol(mac)
     elif seleccion:   
-        leer_datos()
-        limpselec(seleccion=seleccion)
+        datos = leer_datos()
+        selec = limpselec(seleccion=seleccion)
         
         dicget = datos[selec]
         dicmacint = dicget.get("mac")
         dicmac = str(dicmacint)
 
-        fixmac(macUser=dicmac)
-        wol(mac)
+        mac = fixmac(macUser=dicmac)
+        if mac != None:
+            wol(mac)
     
 #Agrega a la lista la informacion
 def agregar_mac():
     textomac = macvar.get()
     textoname = textonamevar.get()
     
-    leer_datos()
+    datos = leer_datos()
 
     nuevos_datos = {
         "mac" : textomac,
@@ -131,8 +134,8 @@ def borrar():
         return
 
     listamac.delete(seleccion)
-    leer_datos()
-    limpselec(seleccion=seleccion)
+    datos = leer_datos()
+    selec = limpselec(seleccion=seleccion)
     datos.pop(selec)
     leercsv()
 
